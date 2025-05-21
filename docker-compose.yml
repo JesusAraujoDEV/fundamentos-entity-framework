@@ -9,7 +9,23 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${SQL_SERVER_PASSWORD}
     volumes:
-      - sql_data:/var/opt/mssql/data
-
+      - ./sql_data:/var/opt/mssql/data
+  sqlpad:
+    image: sqlpad/sqlpad:latest
+    ports:
+      - "3000:3000"
+    environment:
+      SQLPAD_CONNECTIONS: '[{"name":"SQL Server Local","driver":"mssql","host":"sqlserver","port":1433,"username":"sa","password":"${SQL_SERVER_PASSWORD}"}]'
+      # CAMBIO AQUÍ: Formato de email para el usuario admin
+      SQLPAD_ADMIN: "admin@example.com:${SQL_SERVER_PASSWORD}" # O la contraseña que prefieras para SQLPad
+      # SQLPAD_ADMIN_EMAIL: "admin@example.com" # Esto es opcional, ya que SQLPAD_ADMIN lo define
+    depends_on:
+      - sqlserver
+    networks:
+      - app-network
 volumes:
   sql_data:
+
+networks:
+  app-network: # Define una red común para que los servicios puedan comunicarse entre sí
+    driver: bridge

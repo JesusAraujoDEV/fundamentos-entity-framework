@@ -415,4 +415,6 @@ obj/
 .env.production.local
 .env.local
 
+sql_data/
+
 # End of https://www.toptal.com/developers/gitignore/api/csharp,dotnetcore
