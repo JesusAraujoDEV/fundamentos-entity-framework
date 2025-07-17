@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:latest
@@ -7,18 +5,17 @@ services:
       - "1433:1433"
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: ${SQL_SERVER_PASSWORD}
+      SA_PASSWORD: wuejejejAURA777
     volumes:
       - ./sql_data:/var/opt/mssql/data
-  sqlpad:
-    image: sqlpad/sqlpad:latest
+    networks:
+      - app-network
+
+  # New service for Adminer
+  adminer:
+    image: adminer:latest # Or specify a version like adminer:4.8.1
     ports:
-      - "3000:3000"
-    environment:
-      SQLPAD_CONNECTIONS: '[{"name":"SQL Server Local","driver":"mssql","host":"sqlserver","port":1433,"username":"sa","password":"${SQL_SERVER_PASSWORD}"}]'
-      # CAMBIO AQUÍ: Formato de email para el usuario admin
-      SQLPAD_ADMIN: "admin@example.com:${SQL_SERVER_PASSWORD}" # O la contraseña que prefieras para SQLPad
-      # SQLPAD_ADMIN_EMAIL: "admin@example.com" # Esto es opcional, ya que SQLPAD_ADMIN lo define
+      - "8080:8080" # Access via http://localhost:8080
     depends_on:
       - sqlserver
     networks:
@@ -27,5 +24,5 @@ volumes:
   sql_data:
 
 networks:
-  app-network: # Define una red común para que los servicios puedan comunicarse entre sí
+  app-network:
     driver: bridge
